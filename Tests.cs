@@ -16,7 +16,13 @@ namespace TA_Lab
         {
             string query = "furniture";
             string word = "Amazon";
-            string fileLocation = "D:\\Screenshots\\Test1.png";
+
+            string path = System.IO.Directory.GetCurrentDirectory();
+            for (int i = 0; i < 3; i++)
+            {
+                path = System.IO.Directory.GetParent(path).FullName;
+            }
+            string fileLocation = path + "\\Screenshots\\Test1.png";
 
             Driver.Manage().Window.Maximize();
 
