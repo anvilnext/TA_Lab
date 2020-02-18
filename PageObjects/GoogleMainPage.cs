@@ -35,13 +35,25 @@ namespace TA_Lab.PageObjects
         public void InvokeSearch(string query)
         {
             SearchField.SendKeys(query);
-            SearchField.SendKeys(OpenQA.Selenium.Keys.Enter);
+            SearchField.SendKeys(Keys.Enter);
         }
 
         public int SearchFirstPage(string word)
         {
             IWebElement Res = Driver.FindElement(By.XPath(string.Format(XPathBase, word)));
             return int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
+        }
+
+        public int SearchPage(string word)
+        {
+            while ((Driver.FindElements(By.XPath("//span[text()='Next']")).Count != 0) | (Driver.FindElements(By.XPath("//span[text()='Следующая']")).Count != 0))
+            {
+                if (Driver.FindElement(By.XPath(string.Format(XPathBase, word))).Text.Contains(word))
+                {
+                    return int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
+                }
+            }
+            return 0;
         }
 
         public void TakeScreenshot(string fileLocation)
@@ -112,7 +124,7 @@ namespace TA_Lab.PageObjects
                 string scollToTopJS = "window.scrollTo(0, 0)";
                 js.ExecuteScript(scollToTopJS);
 
-                Byte[] imageBaseContent = ((ITakesScreenshot)Driver).GetScreenshot().AsByteArray;
+                byte[] imageBaseContent = ((ITakesScreenshot)Driver).GetScreenshot().AsByteArray;
                 Image imageBase;
                 using (var ms = new MemoryStream(imageBaseContent))
                 {
