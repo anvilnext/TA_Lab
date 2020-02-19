@@ -21,9 +21,14 @@ namespace TA_Lab.Additional
             return path;
         }
 
-        public static string SetMany(int num, int k)
+        public static string SetManyGoogle(int k)
         {
-            return GetPath() + string.Format("\\Screenshots\\Test{0}\\Test{1}", num, num) + string.Format("_{0}", k) + ".png";
+            return GetPath() + string.Format("\\Screenshots\\Test_Google\\Test") + string.Format("_{0}", k) + ".png";
+        }
+
+        public static string SetManyWiki(int k)
+        {
+            return GetPath() + string.Format("\\Screenshots\\Test_Wiki\\Test") + string.Format("_{0}", k) + ".png";
         }
     }
 }

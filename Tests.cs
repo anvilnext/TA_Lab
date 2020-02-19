@@ -9,7 +9,6 @@ namespace TA_Lab
     [TestClass]
     public class Tests
     {
-        private IWebDriver Driver => WebDriverBase.GetDriver();
         private GoogleMainPage MainGoogle = new GoogleMainPage();
         private WikipediaMainPage MainWiki = new WikipediaMainPage();
 
@@ -19,10 +18,10 @@ namespace TA_Lab
             string query = "furniture";
             string word = "Amazon";
 
-            Driver.Manage().Window.Maximize();
             MainGoogle.GoToPage().InvokeSearch(query);
             Assert.AreEqual(1, MainGoogle.SearchFirstPage(word));
             MainGoogle.TakeScreenshot(Helper.SetLocation(1));
+            MainGoogle.TakeScreenshotWithJS(Helper.SetLocation(2));
         }
 
         [TestMethod]
@@ -30,19 +29,27 @@ namespace TA_Lab
         {
             string query = "furniture";
             string word = "Bobs.com";
-
-            Driver.Manage().Window.Maximize();
+            
             MainGoogle.GoToPage().InvokeSearch(query);
-            Assert.AreNotEqual(0, MainGoogle.SearchPage(word));
-            MainGoogle.TakeScreenshot(Helper.SetLocation(2));
+            Assert.AreNotEqual((0 | 1), MainGoogle.SearchPage(word, false));
+            MainGoogle.TakeScreenshot(Helper.SetLocation(3));
+            MainGoogle.TakeScreenshotWithJS(Helper.SetLocation(4));
+        }
+
+        [TestMethod]
+        public void GoogleAnyPageNoMatchSearch()
+        {
+            string query = "furniture";
+            string word = "EPAM";
+
+            MainGoogle.GoToPage().InvokeSearch(query);
+            Assert.AreNotEqual(0, MainGoogle.SearchPage(word, true)); 
         }
 
         [TestMethod]
         public void WikipediaImages()
         {
-            Driver.Manage().Window.Maximize();
-            Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(5);
-            MainWiki.GoToPage().GetAllScreenshots(3);
+            MainWiki.GoToPage().GetEssentialImagesScreenShot();
         }
 
         [ClassCleanup]

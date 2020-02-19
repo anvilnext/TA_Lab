@@ -11,6 +11,9 @@ using System.Threading.Tasks;
 using OpenQA.Selenium;
 using SeleniumExtras.PageObjects;
 using TA_Lab.Additional;
+using WDSE;
+using WDSE.Decorators;
+using WDSE.ScreenshotMaker;
 
 namespace TA_Lab.PageObjects
 {
@@ -22,6 +25,7 @@ namespace TA_Lab.PageObjects
         public GoogleMainPage()
         {
             PageFactory.InitElements(Driver, this);
+            Driver.Manage().Window.Maximize();
         }
 
         [FindsBy(How = How.Name, Using = "q")]
@@ -45,7 +49,7 @@ namespace TA_Lab.PageObjects
             return int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
         }
 
-        public int SearchPage(string word)
+        public int SearchPage(string word, bool makeScr)
         {
             string[] lang = new string[] { "Next", "Следующая", "Уперед" };
             int p = 1;
@@ -54,13 +58,15 @@ namespace TA_Lab.PageObjects
             {
                 while (Driver.FindElements(By.XPath(string.Format("//span[text()='{0}']", lang[i]))).Count != 0)
                 {
-                    bool isPresent = Driver.FindElements(By.XPath(string.Format(XPathBase, word))).Count > 0;
-                    if (isPresent == true)
+                    int cur_page = int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
+                    if (IsPresent(word) == true)
                     {
-                        return int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
+                        return cur_page;
                     }
                     else
                     {
+                        if (makeScr == true)
+                            TakeScreenshot(Helper.SetManyGoogle(cur_page));
                         Driver.FindElement(By.XPath(string.Format("//a[@aria-label='Page {0}']", p + 1))).Click();
                         p++;
                     }
@@ -69,14 +75,25 @@ namespace TA_Lab.PageObjects
             return 0;
         }
 
+        public bool IsPresent(string word)
+        {
+            return Driver.FindElements(By.XPath(string.Format(XPathBase, word))).Count > 0;
+        }
+
         public void TakeScreenshot(string fileLocation)
+        {
+            byte[] Scr = Driver.TakeScreenshot(new VerticalCombineDecorator(new ScreenshotMaker().RemoveScrollBarsWhileShooting()));
+            Bitmap img = Image.FromStream(new MemoryStream(Scr)) as Bitmap;
+            img.Save(fileLocation);  
+        }
+
+        public void TakeScreenshotWithJS(string fileLocation)
         {
             IJavaScriptExecutor js = Driver as IJavaScriptExecutor;
             Image finalImage;
             // get the full page height and current browser height
             string getCurrentBrowserSizeJS =
                 @"
-
                 window.browserHeight = (window.innerHeight || document.body.clientHeight);
                 window.headerHeight= document.getElementById('searchform').clientHeight;;
                 window.fullPageHeight = document.body.scrollHeight;

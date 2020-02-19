@@ -10,6 +10,9 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using TA_Lab.Additional;
+using WDSE;
+using WDSE.Decorators;
+using WDSE.ScreenshotMaker;
 
 namespace TA_Lab.PageObjects
 {
@@ -20,9 +23,11 @@ namespace TA_Lab.PageObjects
         public WikipediaMainPage()
         {
             PageFactory.InitElements(Driver, this);
+            Driver.Manage().Window.Maximize();
+            Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(5);
         }
 
-        [FindsBy(How = How.XPath, Using = "//img")]
+        [FindsBy(How = How.TagName, Using = "img")]
         private IList<IWebElement> Images;
 
         public WikipediaMainPage GoToPage()
@@ -31,35 +36,26 @@ namespace TA_Lab.PageObjects
             return new WikipediaMainPage();
         }
 
-        public void GetAllScreenshots(int num)
+        public Bitmap TakeScreenshot()
         {
-            int k = 0;
-
-            foreach (IWebElement element in Images)
-            {
-                try
-                {
-                    var img = GetElementScreenShot(Driver, element);
-                    if (img != null)
-                        img.Save(Helper.SetMany(num, k));
-                    k++;
-                }
-                catch (OutOfMemoryException)
-                {
-                    continue;
-                }
-            } 
+            var scMaker = new ScreenshotMaker();
+            var vcd = new VerticalCombineDecorator(scMaker);
+            vcd.SetWaitAfterScrolling(TimeSpan.FromMilliseconds(700));
+            var Scr = Driver.TakeScreenshot(vcd);
+            return Image.FromStream(new MemoryStream(Scr)) as Bitmap;
         }
 
-        public Bitmap GetElementScreenShot(IWebDriver Driver, IWebElement element)
+        public void GetEssentialImagesScreenShot()
         {
-            Actions actions = new Actions(Driver);
-            actions.MoveToElement(element).Perform();
-
-            Screenshot Sc = ((ITakesScreenshot)Driver).GetScreenshot();
-
-            var img = Image.FromStream(new MemoryStream(Sc.AsByteArray)) as Bitmap;
-            return img.Clone(new Rectangle(element.Location, element.Size), img.PixelFormat);
+            var img = TakeScreenshot();
+            for (int i = 0; i < Images.Count; i++)
+            {
+                if (Images[i].Size.Width >= 120)
+                {
+                    Bitmap res = img.Clone(new Rectangle(Images[i].Location, Images[i].Size), img.PixelFormat);
+                    res.Save(Helper.SetManyWiki(i));
+                }
+            }
         }
     }
 }
