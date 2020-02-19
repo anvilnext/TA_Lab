@@ -10,6 +10,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using OpenQA.Selenium;
 using SeleniumExtras.PageObjects;
+using TA_Lab.Additional;
 
 namespace TA_Lab.PageObjects
 {

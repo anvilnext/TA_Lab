@@ -11,6 +11,7 @@ namespace TA_Lab
     {
         private IWebDriver Driver => WebDriverBase.GetDriver();
         private GoogleMainPage MainGoogle = new GoogleMainPage();
+        private WikipediaMainPage MainWiki = new WikipediaMainPage();
 
         [TestMethod]
         public void GoogleFirstPageSearch()
@@ -34,6 +35,14 @@ namespace TA_Lab
             MainGoogle.GoToPage().InvokeSearch(query);
             Assert.AreNotEqual(0, MainGoogle.SearchPage(word));
             MainGoogle.TakeScreenshot(Helper.SetLocation(2));
+        }
+
+        [TestMethod]
+        public void WikipediaImages()
+        {
+            Driver.Manage().Window.Maximize();
+            Driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(5);
+            MainWiki.GoToPage().GetAllScreenshots(3);
         }
 
         [ClassCleanup]
