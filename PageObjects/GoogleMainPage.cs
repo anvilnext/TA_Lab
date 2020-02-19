@@ -46,11 +46,23 @@ namespace TA_Lab.PageObjects
 
         public int SearchPage(string word)
         {
-            while ((Driver.FindElements(By.XPath("//span[text()='Next']")).Count != 0) | (Driver.FindElements(By.XPath("//span[text()='Следующая']")).Count != 0))
+            string[] lang = new string[] { "Next", "Следующая", "Уперед" };
+            int p = 1;
+
+            for (int i = 0; i < lang.Length; i++)
             {
-                if (Driver.FindElement(By.XPath(string.Format(XPathBase, word))).Text.Contains(word))
+                while (Driver.FindElements(By.XPath(string.Format("//span[text()='{0}']", lang[i]))).Count != 0)
                 {
-                    return int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
+                    bool isPresent = Driver.FindElements(By.XPath(string.Format(XPathBase, word))).Count > 0;
+                    if (isPresent == true)
+                    {
+                        return int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
+                    }
+                    else
+                    {
+                        Driver.FindElement(By.XPath(string.Format("//a[@aria-label='Page {0}']", p + 1))).Click();
+                        p++;
+                    }
                 }
             }
             return 0;
