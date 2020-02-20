@@ -52,13 +52,13 @@ namespace TA_Lab.PageObjects
         public int SearchPage(string word, bool makeScr)
         {
             string[] lang = new string[] { "Next", "Следующая", "Уперед" };
-            int p = 1;
+            int cur_page = 1;
 
             for (int i = 0; i < lang.Length; i++)
             {
                 while (Driver.FindElements(By.XPath(string.Format("//span[text()='{0}']", lang[i]))).Count != 0)
                 {
-                    int cur_page = int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
+                    cur_page = int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
                     if (IsPresent(word) == true)
                     {
                         return cur_page;
@@ -67,12 +67,13 @@ namespace TA_Lab.PageObjects
                     {
                         if (makeScr == true)
                             TakeScreenshot(Helper.SetManyGoogle(cur_page));
-                        Driver.FindElement(By.XPath(string.Format("//a[@aria-label='Page {0}']", p + 1))).Click();
-                        p++;
+                        Driver.FindElement(By.XPath(string.Format("//a[@aria-label='Page {0}']", cur_page + 1))).Click();
                     }
                 }
+                if (makeScr == true)
+                    TakeScreenshot(Helper.SetManyGoogle(cur_page));
             }
-            return 0;
+            return cur_page;
         }
 
         public bool IsPresent(string word)

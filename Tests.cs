@@ -9,12 +9,10 @@ namespace TA_Lab
     [TestClass]
     public class Tests
     {
-        private GoogleMainPage MainGoogle = new GoogleMainPage();
-        private WikipediaMainPage MainWiki = new WikipediaMainPage();
-
         [TestMethod]
         public void GoogleFirstPageSearch()
         {
+            GoogleMainPage MainGoogle = new GoogleMainPage();
             string query = "furniture";
             string word = "Amazon";
 
@@ -27,6 +25,7 @@ namespace TA_Lab
         [TestMethod]
         public void GoogleAnyPageSearch()
         {
+            GoogleMainPage MainGoogle = new GoogleMainPage();
             string query = "furniture";
             string word = "Bobs.com";
             
@@ -39,7 +38,8 @@ namespace TA_Lab
         [TestMethod]
         public void GoogleAnyPageNoMatchSearch()
         {
-            string query = "furniture";
+            GoogleMainPage MainGoogle = new GoogleMainPage();
+            string query = "furniture stores kherson";
             string word = "EPAM";
 
             MainGoogle.GoToPage().InvokeSearch(query);
@@ -49,7 +49,22 @@ namespace TA_Lab
         [TestMethod]
         public void WikipediaImages()
         {
+            WikipediaMainPage MainWiki = new WikipediaMainPage();
             MainWiki.GoToPage().GetEssentialImagesScreenShot();
+        }
+
+        [TestMethod]
+        public void RozetkaFilter()
+        {
+            RozetkaMainPage MainRozetka = new RozetkaMainPage();
+            RozetkaSearchResultsPage SearchRozetka = new RozetkaSearchResultsPage();
+            int price = 300000;
+            string query = "проекторы";
+
+            MainRozetka.GoToPage().InvokeSearch(query);
+            SearchRozetka.SetMinPrice(price);
+
+            Assert.AreEqual(true, SearchRozetka.CheckIfInRange());
         }
 
         [ClassCleanup]
