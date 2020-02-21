@@ -27,12 +27,6 @@ namespace TA_Lab.PageObjects
         [FindsBy(How = How.XPath, Using = "//button[@type='submit']")]
         private IWebElement OKButton;
 
-        private void Wait()
-        {
-            //WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(15));
-            //wait.Until(d => ((IJavaScriptExecutor)d).ExecuteScript("return document.readyState").Equals("complete"));
-        }
-
         public RozetkaSearchResultsPage SetMinPrice(int price)
         {
             WebDriverWait wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(15));

@@ -30,9 +30,8 @@ namespace TA_Lab
             string word = "Bobs.com";
             
             MainGoogle.GoToPage().InvokeSearch(query);
-            Assert.AreNotEqual((0 | 1), MainGoogle.SearchPage(word, false));
+            Assert.AreNotEqual((0 | 1), MainGoogle.SearchAnyPage(word));
             MainGoogle.TakeScreenshot(Helper.SetLocation(3));
-            MainGoogle.TakeScreenshotWithJS(Helper.SetLocation(4));
         }
 
         [TestMethod]
@@ -43,7 +42,7 @@ namespace TA_Lab
             string word = "EPAM";
 
             MainGoogle.GoToPage().InvokeSearch(query);
-            Assert.AreNotEqual(0, MainGoogle.SearchPage(word, true)); 
+            Assert.AreEqual(true, MainGoogle.SearchPageWithScreenshotNoMatches(word)); 
         }
 
         [TestMethod]

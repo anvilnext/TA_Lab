@@ -21,6 +21,7 @@ namespace TA_Lab.PageObjects
     {
         private IWebDriver Driver => WebDriverBase.GetDriver();
         private string XPathBase = "//h3[contains(text(),'{0}')]";
+        private string XPathPageClicker = "//a[@aria-label='Page {0}']";
 
         public GoogleMainPage()
         {
@@ -45,35 +46,54 @@ namespace TA_Lab.PageObjects
 
         public int SearchFirstPage(string word)
         {
-            IWebElement Res = Driver.FindElement(By.XPath(string.Format(XPathBase, word)));
-            return int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
+            if (Driver.FindElements(By.XPath(string.Format(XPathBase, word))).Count > 0)
+                return int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
+            else
+                return 0;
         }
 
-        public int SearchPage(string word, bool makeScr)
+        public int SearchAnyPage(string word)
         {
-            string[] lang = new string[] { "Next", "Следующая", "Уперед" };
-            int cur_page = 1;
+            int cur_page = int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
 
-            for (int i = 0; i < lang.Length; i++)
+            while (Driver.FindElements(By.XPath(string.Format(XPathPageClicker, cur_page + 1))).Count != 0)
             {
-                while (Driver.FindElements(By.XPath(string.Format("//span[text()='{0}']", lang[i]))).Count != 0)
+                if (IsPresent(word) == true)
+                    return cur_page;
+                else
                 {
-                    cur_page = int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
-                    if (IsPresent(word) == true)
-                    {
-                        return cur_page;
-                    }
-                    else
-                    {
-                        if (makeScr == true)
-                            TakeScreenshot(Helper.SetManyGoogle(cur_page));
-                        Driver.FindElement(By.XPath(string.Format("//a[@aria-label='Page {0}']", cur_page + 1))).Click();
-                    }
+                    Driver.FindElement(By.XPath(string.Format(XPathPageClicker, cur_page + 1))).Click();
+                    Thread.Sleep(1000);
                 }
-                if (makeScr == true)
-                    TakeScreenshot(Helper.SetManyGoogle(cur_page));
+                cur_page++;
             }
-            return cur_page;
+            return 0;
+        }
+
+        public bool SearchPageWithScreenshotNoMatches(string word)
+        {
+            int cur_page = int.Parse(Driver.FindElement(By.ClassName("cur")).Text);
+
+            while (Driver.FindElements(By.XPath(string.Format("//a[@aria-label='Page {0}']", cur_page + 1))).Count != 0)
+            {
+                if (IsPresent(word) == true)
+                {
+                    TakeScreenshot(Helper.SetManyGoogle(cur_page));
+                    return false;
+                }
+                else
+                {
+                    TakeScreenshot(Helper.SetManyGoogle(cur_page));
+                    Driver.FindElement(By.XPath(string.Format("//a[@aria-label='Page {0}']", cur_page + 1))).Click();
+                    Thread.Sleep(1000);
+                }
+                cur_page++;
+            }
+
+            //screenshot for the last page
+            TakeScreenshot(Helper.SetManyGoogle(cur_page));
+
+            return true;
         }
 
         public bool IsPresent(string word)
