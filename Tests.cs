@@ -56,20 +56,23 @@ namespace TA_Lab
         public void RozetkaFilter()
         {
             RozetkaMainPage MainRozetka = new RozetkaMainPage();
-            RozetkaSearchResultsPage SearchRozetka = new RozetkaSearchResultsPage();
             int price = 300000;
             string query = "проекторы";
 
-            MainRozetka.GoToPage().InvokeSearch(query);
-            SearchRozetka.SetMinPrice(price);
-
-            Assert.AreEqual(true, SearchRozetka.CheckIfInRange());
+            Assert.AreEqual(true, MainRozetka.GoToPage().InvokeSearch(query).SetMinPrice(price).CheckIfInRange());
         }
 
-        [ClassCleanup]
-        public static void Close()
+        [TestMethod]
+        public void HighchartsGreenLine()
         {
-            WebDriverBase.CloseDriver();
+            HighchartsMainPage HighMain = new HighchartsMainPage();
+            HighMain.GoToPage().GoToDemos().GoToAdvanced().CheckCharts();
         }
+
+        //[ClassCleanup]
+        //public static void Close()
+        //{
+        //    WebDriverBase.CloseDriver();
+        //}
     }
 }
