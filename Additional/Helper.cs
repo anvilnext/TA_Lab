@@ -23,12 +23,17 @@ namespace TA_Lab.Additional
 
         public static string SetManyGoogle(int k)
         {
-            return GetPath() + string.Format("\\Screenshots\\Test_Google\\Test") + string.Format("_{0}", k) + ".png";
+            return GetPath() + "\\Screenshots\\Test_Google\\Test_" + string.Format("{0}", k) + ".png";
         }
 
         public static string SetManyWiki(int k)
         {
-            return GetPath() + string.Format("\\Screenshots\\Test_Wiki\\Test") + string.Format("_{0}", k) + ".png";
+            return GetPath() + "\\Screenshots\\Test_Wiki\\Test_" + string.Format("{0}", k) + ".png";
+        }
+
+        public static string GetPathCSV(string s)
+        {
+            return GetPath() + string.Format("\\CSV\\{0}", s) + ".csv";
         }
     }
 }

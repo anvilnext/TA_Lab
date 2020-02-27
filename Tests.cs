@@ -66,13 +66,14 @@ namespace TA_Lab
         public void HighchartsGreenLine()
         {
             HighchartsMainPage HighMain = new HighchartsMainPage();
-            HighMain.GoToPage().GoToDemos().GoToAdvanced().CheckCharts();
+            bool result = HighMain.GoToPage().GoToDemos().GoToAdvanced().CheckChartGreen();
+            Assert.AreEqual(true, result);
         }
 
-        //[ClassCleanup]
-        //public static void Close()
-        //{
-        //    WebDriverBase.CloseDriver();
-        //}
+        [ClassCleanup]
+        public static void Close()
+        {
+            WebDriverBase.CloseDriver();
+        }
     }
 }
