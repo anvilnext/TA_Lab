@@ -70,6 +70,14 @@ namespace TA_Lab
             Assert.AreEqual(true, result);
         }
 
+        [TestMethod]
+        public void HighchartsGoogle()
+        {
+            HighchartsMainPage HighMain = new HighchartsMainPage();
+            bool result = HighMain.GoToPage().GoToDemos().GoToAdvanced().CheckChartGoogle();
+            Assert.AreEqual(true, result);
+        }
+
         [ClassCleanup]
         public static void Close()
         {

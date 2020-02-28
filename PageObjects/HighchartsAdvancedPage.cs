@@ -51,7 +51,7 @@ namespace TA_Lab.PageObjects
         //k stands for the number of required fields to separate to
         private string[][] GetValuesFromGraph(IList<IWebElement> graph, int k)
         {
-            string[] separator = { ". ", ", " };
+            string[] separator = { ". ", ", ", "-" };
             string[][] res = new string[graph.Count][];
             int j = 0;
             for (int i = 0; i < graph.Count; i++)
@@ -90,6 +90,40 @@ namespace TA_Lab.PageObjects
                     if (csv2[i + 1] != tokens[0])
                         return false;
                 } 
+            }
+
+            return true;
+        }
+
+        public bool CheckChartGoogle()
+        {
+            int n = 5;
+            string[] csv1 = ReadCSV(Helper.GetPathCSV("Google"), 0);
+            string[] csv2 = ReadCSV(Helper.GetPathCSV("Google"), 1);
+            string[][] values = GetValuesFromGraph(GoogleSearchGraph, n);
+
+            string[] baseMonth = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+            string[] baseNum = { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" };
+
+            for (int i = 0; i < values.Length; i++)
+            {
+                string[] csvtokens = csv1[i + 1].Split('-');
+                string[] valuestokens = values[i][2].Split(' ');
+
+                for (int j = 0; j < baseMonth.Length; j++)
+                {
+                    if (valuestokens[0] == baseMonth[j])
+                        valuestokens[0] = baseNum[j];
+                }
+
+                if (csvtokens[1] != valuestokens[0])
+                    return false;
+
+                string[] tokens = values[i][4].Split(' ');
+                if (csv2[i + 1] != tokens[0])
+                    return false;
+
+
             }
 
             return true;
