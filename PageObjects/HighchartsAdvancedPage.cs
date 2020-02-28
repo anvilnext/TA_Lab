@@ -102,6 +102,21 @@ namespace TA_Lab.PageObjects
             string[] csv2 = ReadCSV(Helper.GetPathCSV("Google"), 1);
             string[][] values = GetValuesFromGraph(GoogleSearchGraph, n);
 
+            return CheckPercentGraphs(csv1, csv2, values);
+        }
+
+        public bool CheckChartRevenue()
+        {
+            int n = 5;
+            string[] csv1 = ReadCSV(Helper.GetPathCSV("Revenue"), 0);
+            string[] csv2 = ReadCSV(Helper.GetPathCSV("Revenue"), 1);
+            string[][] values = GetValuesFromGraph(RevenueGraph, n);
+
+            return CheckPercentGraphs(csv1, csv2, values);
+        }
+
+        public bool CheckPercentGraphs(string[] csv1, string[] csv2, string[][] values)
+        {
             string[] baseMonth = { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
             string[] baseNum = { "01", "02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12" };
 
@@ -122,8 +137,6 @@ namespace TA_Lab.PageObjects
                 string[] tokens = values[i][4].Split(' ');
                 if (csv2[i + 1] != tokens[0])
                     return false;
-
-
             }
 
             return true;
